@@ -35,12 +35,14 @@ namespace HelloDungeon
             public string Potiential;
         }
 
+        //Initializing variables
         bool gameOver = false;
         int currentScene = 0;
         string input = "";
         int inputReceived = 0;
         string output = "";
 
+        //Declaring characters
         Guy Player;
         Guy JoePable;
         Guy Joehna;
@@ -359,6 +361,20 @@ namespace HelloDungeon
             Console.Clear();
         }
 
+        int[] numbers = new int[3] { 1, 2, 3 };
+
+        //Function for adding ints inside an array
+        void AddArrayInts(int a)
+        {
+            for (int i = 0; i < numbers.Length; i++)
+            {
+                if (numbers[i] == numbers.Length)
+                {
+                    Console.WriteLine(numbers[i]);
+                }
+            }
+        }
+
         //Golden function for declaring variables
         void Start()
         {
@@ -455,6 +471,9 @@ namespace HelloDungeon
 
         public void Run()
         {
+            AddArrayInts(numbers);
+            return;
+
             Start();
 
             while (gameOver == false)
