@@ -7,6 +7,17 @@ using System.Threading.Tasks;
 
 namespace HelloDungeon
 {
+    struct Stand
+    {
+        public string Name;
+        public float Power;
+        public float Speed;
+        public float Durability;
+        public int Range;
+        public int Precision;
+        public string Potiential;
+    }
+
     class Game
     {
         struct BoolWeapon
@@ -14,26 +25,6 @@ namespace HelloDungeon
             bool weapon;
         }
 
-        struct Guy
-        {
-            public string Name;
-            public float Health;
-            public float Damage;
-            public float Defense;
-            public float Stamina;
-            public Stand Ability;
-        }
-
-        struct Stand
-        {
-            public string Name;
-            public float Power;
-            public float Speed;
-            public float Durability;
-            public int Range;
-            public int Precision;
-            public string Potiential;
-        }
 
         //Initializing variables
         bool gameOver = false;
@@ -41,13 +32,15 @@ namespace HelloDungeon
         string input = "";
         int inputReceived = 0;
         string output = "";
+        int currentEnemyIndex = 0;
 
         //Declaring characters
-        Guy Player;
-        Guy JoePable;
-        Guy Joehna;
-        Guy Jach;
-        Guy Johnny;
+        Character Player;
+        Character JoePable;
+        Character Joehna;
+        Character Jach;
+        Character Johnny;
+        Character[] Enemies;
 
         //Menu for character selection
         int CharacterSelectionMenu(string prompt, string choice1, string choice2, string choice3, string choice4)
@@ -146,10 +139,10 @@ namespace HelloDungeon
             if (inputReceived == 1)
             {
                 Player = JoePable;
-                Console.WriteLine("You have selected " + JoePable.Name);
+                Console.WriteLine("You have selected " + JoePable.GetName());
                 Console.Write("\n");
 
-                PrintStats(Player);
+                Player.PrintStats();
                 Console.Write("\n");
                 Console.WriteLine("His Stand Ability is Purple Haze. When attacking it creates a flesh eating virus that can reduce a person to nothing in seconds.");
 
@@ -160,10 +153,10 @@ namespace HelloDungeon
             else if (inputReceived == 2)
             {
                 Player = Joehna;
-                Console.WriteLine("You have selected " + Joehna.Name);
+                Console.WriteLine("You have selected " + Joehna.GetName());
                 Console.Write("\n");
 
-                PrintStats(Player);
+                Player.PrintStats();
                 Console.Write("\n");
                 Console.WriteLine("His Stand Ability is Epitaph. Epitaph cannot attack and instead allows the user to peak ahead up to 10 seconds into the future.");
 
@@ -173,10 +166,10 @@ namespace HelloDungeon
             else if (inputReceived == 3)
             {
                 Player = Jach;
-                Console.WriteLine("You have selected " + Jach.Name);
+                Console.WriteLine("You have selected " + Jach.GetName());
                 Console.Write("\n");
 
-                PrintStats(Player);
+                Player.PrintStats();
                 Console.Write("\n");
                 Console.WriteLine("His Stand Ability is Dolly Dagger. It is a Stand in the shape of a dagger that also offers a great deal of defense for the user.");
 
@@ -186,10 +179,10 @@ namespace HelloDungeon
             else if (inputReceived == 4)
             {
                 Player = Johnny;
-                Console.WriteLine("You have selected " + Johnny.Name);
+                Console.WriteLine("You have selected " + Johnny.GetName());
                 Console.Write("\n");
 
-                PrintStats(Player);
+                Player.PrintStats();
                 Console.Write("\n");
                 Console.WriteLine("His Stand Ability is Tusk Act IV. This Stand has the power of infinite rotation, when attacking an opponent it's ability" +
                     "causes their cells to rotate infinitely and collide with each other until the opponent is eventually reduced to nothing.");
@@ -207,21 +200,13 @@ namespace HelloDungeon
             }
         }
 
-        //Player atttack function
-        float Attack(Guy attacker, Guy defender)
-        {
-            float totalDamage = attacker.Ability.Power - defender.Defense;
-
-            return defender.Health - totalDamage;
-        }
-
         //Battle function
-        void Fite(ref Guy monster2)
+        void Fite(ref Character monster2)
         {
             //Print stats for both participants
-            PrintStats(Player);
+            Player.PrintStats();
             Console.Write("\n");
-            PrintStats(monster2);
+            monster2.PrintStats();
             Console.Write("\n");
 
             //Bool for player defense
@@ -233,11 +218,12 @@ namespace HelloDungeon
             //If player chooses to attack
             if (battleChoice == "1")
             {
-                monster2.Health = Attack(Player, monster2);
-                Console.WriteLine("You used " + Player.Ability.Name + "!");
+                monster2.TakeDamage(Player.GetDamage());
+                //monster2.GetHealth() = Attack(Player, monster2);
+                Console.WriteLine("You used " + Player.GetStand().Name + "!");
                 Console.ReadKey(true);
 
-                if (monster2.Health <= 0)
+                if (monster2.GetHealth() <= 0)
                 {
                     return;
                 }
@@ -247,7 +233,7 @@ namespace HelloDungeon
             else if (battleChoice == "2")
             {
                 isDefending = true;
-                Player.Defense *= 5;
+                Player.BoostDefense();
                 Console.WriteLine("You brace yourself for the coming strike");
                 Console.ReadKey(true);
             }
@@ -262,36 +248,26 @@ namespace HelloDungeon
             }
 
             //The enemy attacks the player
-            PrintStats(Player);
+            Player.PrintStats();
             Console.Write("\n");
-            PrintStats(monster2);
+            monster2.PrintStats();
             Console.Write("\n");
 
             //Print out feedback for enemy attack and reduce player health
-            Console.WriteLine(monster2.Name + " Punches " + Player.Name + "!");
-            Player.Health = Attack(monster2, Player);
+            Console.WriteLine(monster2.GetName() + " Punches " + Player.GetName() + "!");
+            Player.TakeDamage(monster2.GetDamage());
             Console.ReadKey(true);
 
             if (isDefending == true)
             {
-                Player.Defense /= 5;
+                Player.ResetDefense();
             }
         }
 
-        //Function for printing player stats
-        void PrintStats(Guy monster)
-        {
-            Console.WriteLine("Name:" + monster.Name);
-            Console.WriteLine("Health:" + monster.Health);
-            Console.WriteLine("Damage:" + monster.Damage);
-            Console.WriteLine("Defense:" + monster.Defense);
-            Console.WriteLine("Stamina:" + monster.Stamina);
-        }
-
         //Healing function
-        float HealMon(Guy healReceiver, float healAmount)
+        float HealMon(Character healReceiver, float healAmount)
         {
-            float heal = healReceiver.Health + healAmount;
+            float heal = healReceiver.GetHealth() + healAmount;
 
             //Placing a cap on healing
             if (heal > 3230)
@@ -313,22 +289,11 @@ namespace HelloDungeon
         //Using battle function to create second scene
         void BattleScene()
         {
-            if (inputReceived == 1 || inputReceived == 3 || inputReceived == 4)
-            {
-                Fite(ref Joehna);
-            }
-            else if (inputReceived == 2)
-            {
-                Fite(ref Jach);
-            }
+            Fite(ref Enemies[currentEnemyIndex]);
 
             Console.Clear();
 
-            if (Player.Health <= 0 || Joehna.Health <= 0)
-            {
-                currentScene = 2;
-            }
-            else if (Player.Health <= 0 || Jach.Health <= 0)
+            if (Player.GetHealth() <= 0 || Enemies[currentEnemyIndex].GetHealth() <= 0)
             {
                 currentScene = 2;
             }
@@ -337,42 +302,68 @@ namespace HelloDungeon
         //Display win results for the player
         void WinResultsScene()
         {
-            if (Player.Health > 0 && Joehna.Health <= 0)
+            if (Player.GetHealth() > 0 && Enemies[currentEnemyIndex].GetHealth() <= 0)
             {
                 Console.WriteLine("Damn, he got his ass handed to him.");
-                Console.WriteLine("The winner is: " + Player.Name);
+                Console.WriteLine("The winner is: " + Player.GetName());
+                currentScene = 1;
+                currentEnemyIndex++;
+
+                if (currentEnemyIndex >= Enemies.Length)
+                {
+                    gameOver = true;
+                }
             }
-            else if (Player.Health > 0 && Jach.Health <= 0)
-            {
-                Console.WriteLine("Damn, he got his ass handed to him.");
-                Console.WriteLine("The winner is: " + Player.Name);
-            }
-            else if (Player.Health < 0 && Joehna.Health >= 0)
-            {
-                Console.WriteLine("Holy shit, you got demolished.");
-                Console.WriteLine("The winner is: " + Joehna.Name);
-            }
-            else if (Player.Health < 0 && Jach.Health >= 0)
+            else if (Player.GetHealth() < 0 && Enemies[currentEnemyIndex].GetHealth() >= 0)
             {
                 Console.WriteLine("Holy shit, you got demolished.");
-                Console.WriteLine("The winner is: " + Jach.Name);
+                Console.WriteLine("The winner is: " + Enemies[currentEnemyIndex].GetName());
+                currentScene = 3;
             }
             Console.ReadKey(true);
             Console.Clear();
         }
 
-        int[] numbers = new int[3] { 1, 2, 3 };
-
-        //Function for adding ints inside an array
-        void AddArrayInts(int a)
+        void EndGameScene()
         {
-            for (int i = 0; i < numbers.Length; i++)
+            string playerChoice = GetInput("You Died. Play Again?", "Yes", "No", "");
+
+            if (playerChoice == "1")
             {
-                if (numbers[i] == numbers.Length)
-                {
-                    Console.WriteLine(numbers[i]);
-                }
+                currentScene = 0;
             }
+            else if (playerChoice == "2")
+            {
+                gameOver = true;
+            }
+        }
+
+        int[] numbers = new int[3] { 49, 6, 12 };
+        
+        //Function for adding ints inside an array
+        void PrintSum(int[] array)
+        {
+            int sum = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                sum += array[i];
+            }
+            Console.WriteLine(sum);
+        }
+
+        //Function for printing largest int in array
+        void PrintLargest(int[] array)
+        {
+            int largestNum = array[0];
+
+            for (int i = 0; i < array.Length; i++)
+            {
+              if (array[i] >= largestNum)
+              {
+                  largestNum = array[i];
+              }
+            }
+            Console.WriteLine(largestNum);
         }
 
         //Golden function for declaring variables
@@ -414,36 +405,15 @@ namespace HelloDungeon
             Tusk.Precision = 10;
             Tusk.Potiential = "High";
 
+            JoePable = new Character("JoePable", 20f, 246.90f, .9f, 3f, Haze);
 
-            JoePable.Name = "JoePable";
-            JoePable.Health = 20f;
-            JoePable.Damage = 246.90f;
-            JoePable.Defense = .9f;
-            JoePable.Stamina = 3f;
-            JoePable.Ability = Haze;
+            Joehna = new Character("Joehna", 20f, 357.89f, 2.1f, 4, Epitaph);
 
+            Jach = new Character("Jach", 20f, 135.91f, -1.1f, 2, Dagger);
 
-            Joehna.Name = "Joehna";
-            Joehna.Health = 20f;
-            Joehna.Damage = 357.89f;
-            Joehna.Defense = 2.1f;
-            Joehna.Stamina = 4;
-            Joehna.Ability = Epitaph;
+            Johnny = new Character("Johnny", 50f, 5f, 2f, 1, Tusk);
 
-
-            Jach.Name = "Jach";
-            Jach.Health = 20f;
-            Jach.Damage = 135.91f;
-            Jach.Defense = -1.1f;
-            Jach.Stamina = 2;
-            Jach.Ability = Dagger;
-
-            Johnny.Name = "Johnny";
-            Johnny.Health = 50f;
-            Johnny.Damage = 5f;
-            Johnny.Defense = 2f;
-            Johnny.Stamina = 1;
-            Johnny.Ability = Tusk;
+            Enemies = new Character[4] { Joehna, Joehna, Jach, Johnny };
         }
 
         //Golden function for updating game based on player choice
@@ -461,6 +431,10 @@ namespace HelloDungeon
             {
                 WinResultsScene();
             }
+            else if (currentScene == 3)
+            {
+                EndGameScene();
+            }
         }
 
         //Golden function for calling end scene
@@ -471,9 +445,7 @@ namespace HelloDungeon
 
         public void Run()
         {
-            AddArrayInts(numbers);
-            return;
-
+          
             Start();
 
             while (gameOver == false)
