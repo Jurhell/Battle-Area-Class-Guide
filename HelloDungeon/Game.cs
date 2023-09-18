@@ -41,7 +41,6 @@ namespace HelloDungeon
         string input = "";
         int inputReceived = 0;
         string output = "";
-        int currentEnemyIndex = 0;
 
         //Declaring characters
         Guy Player;
@@ -49,7 +48,6 @@ namespace HelloDungeon
         Guy Joehna;
         Guy Jach;
         Guy Johnny;
-        Guy[] Enemies;
 
         //Menu for character selection
         int CharacterSelectionMenu(string prompt, string choice1, string choice2, string choice3, string choice4)
@@ -237,7 +235,7 @@ namespace HelloDungeon
             {
                 monster2.Health = Attack(Player, monster2);
                 Console.WriteLine("You used " + Player.Ability.Name + "!");
-
+                Console.ReadKey(true);
 
                 if (monster2.Health <= 0)
                 {
@@ -251,7 +249,7 @@ namespace HelloDungeon
                 isDefending = true;
                 Player.Defense *= 5;
                 Console.WriteLine("You brace yourself for the coming strike");
-            
+                Console.ReadKey(true);
             }
 
             //If player chooses to run
@@ -259,7 +257,7 @@ namespace HelloDungeon
             {
                 Console.WriteLine("You used the secret Joestar technique.");
                 currentScene = 2;
-            
+                Console.ReadKey(true);
                 return;
             }
 
@@ -315,11 +313,22 @@ namespace HelloDungeon
         //Using battle function to create second scene
         void BattleScene()
         {
-            Fite(ref Enemies[currentEnemyIndex]);
+            if (inputReceived == 1 || inputReceived == 3 || inputReceived == 4)
+            {
+                Fite(ref Joehna);
+            }
+            else if (inputReceived == 2)
+            {
+                Fite(ref Jach);
+            }
 
             Console.Clear();
 
-            if (Player.Health <= 0 || Enemies[currentEnemyIndex].Health <= 0)
+            if (Player.Health <= 0 || Joehna.Health <= 0)
+            {
+                currentScene = 2;
+            }
+            else if (Player.Health <= 0 || Jach.Health <= 0)
             {
                 currentScene = 2;
             }
@@ -328,68 +337,42 @@ namespace HelloDungeon
         //Display win results for the player
         void WinResultsScene()
         {
-            if (Player.Health > 0 && Enemies[currentEnemyIndex].Health <= 0)
+            if (Player.Health > 0 && Joehna.Health <= 0)
             {
                 Console.WriteLine("Damn, he got his ass handed to him.");
                 Console.WriteLine("The winner is: " + Player.Name);
-                currentScene = 1;
-                currentEnemyIndex++;
-
-                if (currentEnemyIndex >= Enemies.Length)
-                {
-                    gameOver = true;
-                }
             }
-            else if (Player.Health < 0 && Enemies[currentEnemyIndex].Health >= 0)
+            else if (Player.Health > 0 && Jach.Health <= 0)
+            {
+                Console.WriteLine("Damn, he got his ass handed to him.");
+                Console.WriteLine("The winner is: " + Player.Name);
+            }
+            else if (Player.Health < 0 && Joehna.Health >= 0)
             {
                 Console.WriteLine("Holy shit, you got demolished.");
-                Console.WriteLine("The winner is: " + Enemies[currentEnemyIndex].Name);
-                currentScene = 3;
+                Console.WriteLine("The winner is: " + Joehna.Name);
+            }
+            else if (Player.Health < 0 && Jach.Health >= 0)
+            {
+                Console.WriteLine("Holy shit, you got demolished.");
+                Console.WriteLine("The winner is: " + Jach.Name);
             }
             Console.ReadKey(true);
             Console.Clear();
         }
 
-        void EndGameScene()
-        {
-            string playerChoice = GetInput("You Died. Play Again?", "Yes", "No", "");
+        int[] numbers = new int[3] { 1, 2, 3 };
 
-            if (playerChoice == "1")
-            {
-                currentScene = 0;
-            }
-            else if (playerChoice == "2")
-            {
-                gameOver = true;
-            }
-        }
-
-        int[] numbers = new int[3] { 49, 6, 12 };
-        
         //Function for adding ints inside an array
-        void PrintSum(int[] array)
+        void AddArrayInts(int a)
         {
-            int sum = 0;
-            for (int i = 0; i < array.Length; i++)
+            for (int i = 0; i < numbers.Length; i++)
             {
-                sum += array[i];
+                if (numbers[i] == numbers.Length)
+                {
+                    Console.WriteLine(numbers[i]);
+                }
             }
-            Console.WriteLine(sum);
-        }
-
-        //Function for printing largest int in array
-        void PrintLargest(int[] array)
-        {
-            int largestNum = array[0];
-
-            for (int i = 0; i < array.Length; i++)
-            {
-              if (array[i] >= largestNum)
-              {
-                  largestNum = array[i];
-              }
-            }
-            Console.WriteLine(largestNum);
         }
 
         //Golden function for declaring variables
@@ -461,8 +444,6 @@ namespace HelloDungeon
             Johnny.Defense = 2f;
             Johnny.Stamina = 1;
             Johnny.Ability = Tusk;
-
-            Enemies = new Guy[4] { Joehna, Joehna, Jach, Johnny };
         }
 
         //Golden function for updating game based on player choice
@@ -480,10 +461,6 @@ namespace HelloDungeon
             {
                 WinResultsScene();
             }
-            else if (currentScene == 3)
-            {
-                EndGameScene();
-            }
         }
 
         //Golden function for calling end scene
@@ -494,7 +471,9 @@ namespace HelloDungeon
 
         public void Run()
         {
-          
+            AddArrayInts(numbers);
+            return;
+
             Start();
 
             while (gameOver == false)
