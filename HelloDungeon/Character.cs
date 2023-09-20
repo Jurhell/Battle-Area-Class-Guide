@@ -17,6 +17,14 @@ namespace HelloDungeon
         private float _stamina;
         private Stand _ability;
 
+        public Character()
+        {
+            _name = "";
+            _health = 0f;
+            _damage = 0f;
+            _defense = 0f;
+        }
+
         public Character(string name, float health, float damage, float defense, float stamina, Stand ability)
         {
             _name = name;
@@ -34,12 +42,22 @@ namespace HelloDungeon
 
         public float GetDamage()
         {
-            return _damage;
+            return _ability.Power;
         }
 
         public float GetHealth()
         {
             return _health;
+        }
+
+        public float GetDefense()
+        {
+            return _defense;
+        }
+
+        public float GetStamina()
+        {
+            return _stamina;
         }
 
         public Stand GetStand()
@@ -58,7 +76,7 @@ namespace HelloDungeon
         }
 
         //Function for printing player stats
-       public void PrintStats()
+       public virtual void PrintStats()
         {
             Console.WriteLine("Name:" + _name);
             Console.WriteLine("Health:" + _health);

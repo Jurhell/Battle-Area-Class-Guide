@@ -31,21 +31,21 @@ namespace HelloDungeon
         int currentScene = 0;
         string input = "";
         int inputReceived = 0;
-        string output = "";
         int currentEnemyIndex = 0;
 
         //Declaring characters
-        Character Player;
+        Player PlayerCharacter;
         Character JoePable;
         Character Joehna;
         Character Jach;
         Character Johnny;
+        Character Jocelyn;
         Character[] Enemies;
 
         //Menu for character selection
-        int CharacterSelectionMenu(string prompt, string choice1, string choice2, string choice3, string choice4)
+        int CharacterSelectionMenu(string prompt, string choice1, string choice2, string choice3, string choice4, string choice5)
         {
-            while (input != "1" && input != "2" && input != "3" && input != "4")
+            while (input != "1" && input != "2" && input != "3" && input != "4" && input != "5")
             {
                 //Prompt and choices
                 Console.WriteLine(prompt);
@@ -53,6 +53,7 @@ namespace HelloDungeon
                 Console.WriteLine("2. " + choice2);
                 Console.WriteLine("3. " + choice3);
                 Console.WriteLine("4. " + choice4);
+                Console.WriteLine("5. " + choice5);
                 Console.WriteLine("> ");
 
                 //Player input
@@ -74,9 +75,13 @@ namespace HelloDungeon
                 {
                     inputReceived = 4;
                 }
+                else if (input == "5")
+                {
+                    inputReceived = 5;
+                }
                 else
                 {
-                    Console.WriteLine("Sorry that ins't one of the choices.");
+                    Console.WriteLine("Sorry that isn't one of the choices.");
                     Console.ReadKey(true);
                 }
                 Console.Clear();
@@ -84,65 +89,22 @@ namespace HelloDungeon
             return inputReceived;
         }
 
-        string GetInput(string description, string option1, string option2, string option3)
-        {
-
-
-            //While input is not 1 or 2 display the options
-            while (input != "1" && input != "2")
-            {
-                //Print options
-                Console.WriteLine(description);
-                Console.WriteLine("1. " + option1);
-                Console.WriteLine("2. " + option2);
-                Console.WriteLine("3. " + option3);
-                Console.WriteLine("> ");
-
-                //Get input from player
-                input = Console.ReadLine();
-
-                //If player selected the first option
-                if (input == "1")
-                {
-                    output = "1";
-                }
-                //Otherwise if the player selected the second option
-                else if (input == "2")
-                {
-                    output = "2";
-                }
-                else if (input == "3")
-                {
-                    output = "3";
-                }
-                //If none are true
-                else
-                {
-                    //...display error message
-                    Console.WriteLine("Invalid Input");
-                    Console.ReadKey(true);
-                }
-
-                Console.Clear();
-            }
-
-            return output;
-        }
-
         //Character selection and choices
         void CharacterSelection()
         {
             //Display character selection menu and store player input
-            CharacterSelectionMenu("Welcome Player" + "\nPlease choose your guy", "JoePable", "Joehna", "Jach", "Johnny");
-            
+            CharacterSelectionMenu("Welcome Player" + "\nPlease choose your guy", "JoePable", "Joehna", "Jach", "Jocelyn", "Johnny");
+
+            //PlayerCharacter.GetInput("Welcome Player" + "\nPlease choose your guy", JoePable.GetName(), Joehna.GetName(), Jach.GetName(), Jocelyn.GetName(), Johnny.GetName());
+
             //Choices for player
             if (inputReceived == 1)
             {
-                Player = JoePable;
+                PlayerCharacter = new Player(JoePable.GetName(), JoePable.GetHealth(), JoePable.GetDamage(), JoePable.GetDefense(), JoePable.GetStamina(), JoePable.GetStand());
                 Console.WriteLine("You have selected " + JoePable.GetName());
                 Console.Write("\n");
 
-                Player.PrintStats();
+                PlayerCharacter.PrintStats();
                 Console.Write("\n");
                 Console.WriteLine("His Stand Ability is Purple Haze. When attacking it creates a flesh eating virus that can reduce a person to nothing in seconds.");
 
@@ -152,11 +114,11 @@ namespace HelloDungeon
             }
             else if (inputReceived == 2)
             {
-                Player = Joehna;
+                PlayerCharacter = new Player(Joehna.GetName(), Joehna.GetHealth(), Joehna.GetDamage(), Joehna.GetDefense(), Joehna.GetStamina(), Joehna.GetStand());
                 Console.WriteLine("You have selected " + Joehna.GetName());
                 Console.Write("\n");
 
-                Player.PrintStats();
+                PlayerCharacter.PrintStats();
                 Console.Write("\n");
                 Console.WriteLine("His Stand Ability is Epitaph. Epitaph cannot attack and instead allows the user to peak ahead up to 10 seconds into the future.");
 
@@ -165,11 +127,11 @@ namespace HelloDungeon
             }
             else if (inputReceived == 3)
             {
-                Player = Jach;
+                PlayerCharacter = new Player(Jach.GetName(), Jach.GetHealth(), Jach.GetDamage(), Jach.GetDefense(), Jach.GetStamina(), Jach.GetStand());
                 Console.WriteLine("You have selected " + Jach.GetName());
                 Console.Write("\n");
 
-                Player.PrintStats();
+                PlayerCharacter.PrintStats();
                 Console.Write("\n");
                 Console.WriteLine("His Stand Ability is Dolly Dagger. It is a Stand in the shape of a dagger that also offers a great deal of defense for the user.");
 
@@ -178,11 +140,24 @@ namespace HelloDungeon
             }
             else if (inputReceived == 4)
             {
-                Player = Johnny;
+                PlayerCharacter = new Player(Jocelyn.GetName(), Jocelyn.GetHealth(), Jocelyn.GetDamage(), Jocelyn.GetDefense(), Jocelyn.GetStamina(), Jocelyn.GetStand());
+                Console.WriteLine("You have selected " + Jocelyn.GetName());
+                Console.Write("\n");
+
+                PlayerCharacter.PrintStats();
+                Console.Write("\n");
+                Console.WriteLine("Her Stand Ability is Echoes Act II. It is a Stand that uses sound effects to attack the opponent and can generate the effect of that sound.");
+
+                Console.ReadKey(true);
+                Console.Clear();
+            }
+            else if (inputReceived == 5)
+            {
+                PlayerCharacter = new Player(Johnny.GetName(), Johnny.GetHealth(), Johnny.GetDamage(), Johnny.GetDefense(), Johnny.GetStamina(), Johnny.GetStand());
                 Console.WriteLine("You have selected " + Johnny.GetName());
                 Console.Write("\n");
 
-                Player.PrintStats();
+                PlayerCharacter.PrintStats();
                 Console.Write("\n");
                 Console.WriteLine("His Stand Ability is Tusk Act IV. This Stand has the power of infinite rotation, when attacking an opponent it's ability" +
                     "causes their cells to rotate infinitely and collide with each other until the opponent is eventually reduced to nothing.");
@@ -204,7 +179,7 @@ namespace HelloDungeon
         void Fite(ref Character monster2)
         {
             //Print stats for both participants
-            Player.PrintStats();
+            PlayerCharacter.PrintStats();
             Console.Write("\n");
             monster2.PrintStats();
             Console.Write("\n");
@@ -213,14 +188,14 @@ namespace HelloDungeon
             bool isDefending = false;
 
             //Print out feedback for player and reduce health based on damage
-            string battleChoice = GetInput("Choose an action", "Attack", "Defend", "Run");
+            string battleChoice = PlayerCharacter.GetInput("Choose an action", "Attack", "Defend", "Run");
 
             //If player chooses to attack
             if (battleChoice == "1")
             {
-                monster2.TakeDamage(Player.GetDamage());
+                monster2.TakeDamage(PlayerCharacter.GetDamage());
                 //monster2.GetHealth() = Attack(Player, monster2);
-                Console.WriteLine("You used " + Player.GetStand().Name + "!");
+                Console.WriteLine("You used " + PlayerCharacter.GetStand().Name + "!");
                 Console.ReadKey(true);
 
                 if (monster2.GetHealth() <= 0)
@@ -233,7 +208,7 @@ namespace HelloDungeon
             else if (battleChoice == "2")
             {
                 isDefending = true;
-                Player.BoostDefense();
+                PlayerCharacter.BoostDefense();
                 Console.WriteLine("You brace yourself for the coming strike");
                 Console.ReadKey(true);
             }
@@ -243,24 +218,26 @@ namespace HelloDungeon
             {
                 Console.WriteLine("You used the secret Joestar technique.");
                 currentScene = 2;
-                Console.ReadKey(true);
+
                 return;
             }
 
+            HealMon(PlayerCharacter, 50f);
+
             //The enemy attacks the player
-            Player.PrintStats();
+            PlayerCharacter.PrintStats();
             Console.Write("\n");
             monster2.PrintStats();
             Console.Write("\n");
 
             //Print out feedback for enemy attack and reduce player health
-            Console.WriteLine(monster2.GetName() + " Punches " + Player.GetName() + "!");
-            Player.TakeDamage(monster2.GetDamage());
+            Console.WriteLine(monster2.GetName() + " Punches " + PlayerCharacter.GetName() + "!");
+            PlayerCharacter.TakeDamage(monster2.GetDamage());
             Console.ReadKey(true);
 
             if (isDefending == true)
             {
-                Player.ResetDefense();
+                PlayerCharacter.ResetDefense();
             }
         }
 
@@ -293,7 +270,7 @@ namespace HelloDungeon
 
             Console.Clear();
 
-            if (Player.GetHealth() <= 0 || Enemies[currentEnemyIndex].GetHealth() <= 0)
+            if (PlayerCharacter.GetHealth() <= 0 || Enemies[currentEnemyIndex].GetHealth() <= 0)
             {
                 currentScene = 2;
             }
@@ -302,10 +279,10 @@ namespace HelloDungeon
         //Display win results for the player
         void WinResultsScene()
         {
-            if (Player.GetHealth() > 0 && Enemies[currentEnemyIndex].GetHealth() <= 0)
+            if (PlayerCharacter.GetHealth() > 0 && Enemies[currentEnemyIndex].GetHealth() <= 0)
             {
                 Console.WriteLine("Damn, he got his ass handed to him.");
-                Console.WriteLine("The winner is: " + Player.GetName());
+                Console.WriteLine("The winner is: " + PlayerCharacter.GetName());
                 currentScene = 1;
                 currentEnemyIndex++;
 
@@ -314,7 +291,7 @@ namespace HelloDungeon
                     gameOver = true;
                 }
             }
-            else if (Player.GetHealth() < 0 && Enemies[currentEnemyIndex].GetHealth() >= 0)
+            else if (PlayerCharacter.GetHealth() < 0 && Enemies[currentEnemyIndex].GetHealth() >= 0)
             {
                 Console.WriteLine("Holy shit, you got demolished.");
                 Console.WriteLine("The winner is: " + Enemies[currentEnemyIndex].GetName());
@@ -326,7 +303,7 @@ namespace HelloDungeon
 
         void EndGameScene()
         {
-            string playerChoice = GetInput("You Died. Play Again?", "Yes", "No", "");
+            string playerChoice = PlayerCharacter.GetInput("You Died. Play Again?", "Yes", "No");
 
             if (playerChoice == "1")
             {
@@ -380,7 +357,7 @@ namespace HelloDungeon
 
             Stand Haze;
             Haze.Name = "Purple Haze";
-            Haze.Power = 5000f;
+            Haze.Power = 100f;
             Haze.Speed = 15f;
             Haze.Durability = 3f;
             Haze.Range = 5;
@@ -405,6 +382,16 @@ namespace HelloDungeon
             Tusk.Precision = 10;
             Tusk.Potiential = "High";
 
+            Stand Echoes;
+            Echoes.Name = "Echoes Act II";
+            Echoes.Power = 20f;
+            Echoes.Speed = 6f;
+            Echoes.Durability = 50f;
+            Echoes.Range = 20;
+            Echoes.Precision = 3;
+            Echoes.Potiential = "High";
+
+            //Initializing Character Class
             JoePable = new Character("JoePable", 20f, 246.90f, .9f, 3f, Haze);
 
             Joehna = new Character("Joehna", 20f, 357.89f, 2.1f, 4, Epitaph);
@@ -413,7 +400,9 @@ namespace HelloDungeon
 
             Johnny = new Character("Johnny", 50f, 5f, 2f, 1, Tusk);
 
-            Enemies = new Character[4] { Joehna, Joehna, Jach, Johnny };
+            Jocelyn = new Character("Jocelyn", 100f, -25f, 3f, 3f, Echoes);
+
+            Enemies = new Character[5] { Joehna, Joehna, Jach, Jocelyn, Johnny };
         }
 
         //Golden function for updating game based on player choice
